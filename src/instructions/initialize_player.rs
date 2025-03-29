@@ -10,7 +10,7 @@ use pinocchio_system::instructions::CreateAccount;
 use crate::states::Player;
 
 #[inline(always)]
-pub fn initialize_player(
+pub fn process_initialize_player(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
     program_id: &Pubkey,
@@ -24,7 +24,7 @@ pub fn initialize_player(
     }
 
     let last_time_played = u64::from_le_bytes(
-        instruction_data
+        instruction_data[1..9]
             .try_into()
             .map_err(|_error| ProgramError::InvalidInstructionData)?,
     );
