@@ -6,7 +6,7 @@ use pinocchio::{
     ProgramResult,
 };
 use pinocchio_system::instructions::CreateAccount;
-
+use core::mem::size_of;
 use crate::states::Player;
 
 #[inline(always)]

@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "client": "ts-node index.ts"
+    "client": "ts-node src/index.ts"
   },
   "keywords": [],
   "author": "",
