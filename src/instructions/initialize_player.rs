@@ -1,5 +1,3 @@
-use std::ptr::write_bytes;
-
 use pinocchio::{
     account_info::AccountInfo,
     program_error::ProgramError,
@@ -25,6 +23,12 @@ pub fn initialize_player(
         return Err(ProgramError::IncorrectAuthority);
     }
 
+    let last_time_played = u64::from_le_bytes(
+        instruction_data
+            .try_into()
+            .map_err(|_error| ProgramError::InvalidInstructionData)?,
+    );
+
     let space = size_of::<Player>();
 
     let lamports = Rent::get()?.minimum_balance(space);
@@ -40,6 +44,9 @@ pub fn initialize_player(
 
     let player_data = unsafe { player.borrow_mut_data_unchecked() };
     let wave_count = 0u8;
-    player_data[0..8].copy_from_slice(&wave_count.to_le_bytes());
+
+    player_data[0..1].copy_from_slice(&wave_count.to_le_bytes());
+    player_data[1..9].copy_from_slice(&last_time_played.to_le_bytes());
+
     Ok(())
 }
