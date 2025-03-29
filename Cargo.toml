@@ -10,3 +10,4 @@ crate-type = ["cdylib", "lib"]
 pinocchio = "0.8.0"
 pinocchio-log = "0.4.0"
 pinocchio-pubkey = "0.2.4"
+pinocchio-system = "0.2.3"

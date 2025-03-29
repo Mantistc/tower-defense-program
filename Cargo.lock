@@ -69,6 +69,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "pinocchio-system"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "1f75423420ae70aa748cf611cab14cfd00af08d0d2d3d258cb0cf5e2880ec19c"
+dependencies = [
+ "pinocchio",
+ "pinocchio-pubkey",
+]
+
+[[package]]
 name = "proc-macro2"
 version = "1.0.94"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -133,6 +143,7 @@ dependencies = [
  "pinocchio",
  "pinocchio-log",
  "pinocchio-pubkey",
+ "pinocchio-system",
 ]
 
 [[package]]
