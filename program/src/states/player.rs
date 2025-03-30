@@ -1,5 +1,4 @@
 use pinocchio::pubkey::Pubkey;
-
 use super::Transmutable;
 
 #[repr(C)]

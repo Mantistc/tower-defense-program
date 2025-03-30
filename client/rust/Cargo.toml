@@ -1,6 +1,13 @@
 [package]
-name = "rust"
-version.workspace = true
-edition.workspace = true
+name = "td-program-sdk"
+version = "0.1.0"
+edition = "2021"
+description = "A Rust SDK for interacting with the Tower Defense Solana program"
+license = "MIT"
+repository = "https://github.com/Mantistc/tower-defense-program"
+keywords = ["solana", "blockchain", "sdk", "tower-defense"]
+categories = ["cryptography", "game-development", "api-bindings"]
+readme = "README.md"
 
 [dependencies]
+solana-program = "2.2.1"
