@@ -1,9 +1,8 @@
 use std::slice::from_raw_parts;
 
 use solana_program::{
-    example_mocks::solana_sdk::system_program,
     instruction::{AccountMeta, Instruction},
-    pubkey::Pubkey,
+    pubkey::Pubkey, system_program,
 };
 
 use crate::PROGRAM_ID;
