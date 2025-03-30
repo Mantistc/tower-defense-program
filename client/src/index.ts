@@ -1,6 +1,5 @@
 import {
   createSignerFromKeyPair,
-  // createKeyPairSignerFromBytes,
   createSolanaClient,
   createTransaction,
   getExplorerLink,
@@ -26,10 +25,14 @@ async function initializePlayerTest() {
   // simulate last time played
   const lastTimePlayed = Math.floor(new Date().getTime() / 1000); //   /1000 to get secs
 
-  const initializePlayerIx = new InitializePlayerInstruction();
-  await initializePlayerIx.ix(signer.address, BigInt(lastTimePlayed));
+  // set ix args
+  const initializePlayerIx = new InitializePlayerInstruction({
+    lastTimePlayed: BigInt(lastTimePlayed),
+    signer: signer.address,
+  });
 
-  console.log(initializePlayerIx);
+  // build the ix
+  await initializePlayerIx.make();
 
   const transaction = createTransaction({
     version: 0,

@@ -9,6 +9,11 @@ import { SYSTEM_PROGRAM_ADDRESS } from "@solana-program/system";
 import { TOWER_DEFENSE_PROGRAM_ID } from "../constants";
 import { InstructionDiscriminator } from ".";
 
+export interface InitializePlayerInstructionArgs {
+  signer: Address;
+  lastTimePlayed: bigint;
+}
+
 export class InitializePlayerInstruction implements IInstruction {
   accounts:
     | readonly (IAccountLookupMeta<string, string> | IAccountMeta<string>)[]
@@ -18,9 +23,14 @@ export class InitializePlayerInstruction implements IInstruction {
 
   programAddress: Address<string> = TOWER_DEFENSE_PROGRAM_ID;
 
-  constructor() {}
+  args: InitializePlayerInstructionArgs;
 
-  public async ix(signer: Address, lastTimePlayed: bigint) {
+  constructor(args: InitializePlayerInstructionArgs) {
+    this.args = args;
+  }
+
+  public async make() {
+    const { signer, lastTimePlayed } = this.args;
     const { player, bump } = await getPlayerAddress(signer);
 
     const u64Encoder = getU64Encoder();
