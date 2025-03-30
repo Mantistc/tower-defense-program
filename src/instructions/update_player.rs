@@ -1,4 +1,4 @@
-use crate::states::{load_mut_unchecked, Player};
+use crate::states::{load_mut_unchecked, Player, MAX_POSSIBLE_WAVE_COUNT};
 use pinocchio::{account_info::AccountInfo, program_error::ProgramError, ProgramResult};
 
 #[inline(always)]
@@ -24,6 +24,10 @@ pub fn process_update_player(accounts: &[AccountInfo], instruction_data: &[u8]) 
     );
 
     let wave_reached = instruction_data[8];
+
+    if wave_reached > MAX_POSSIBLE_WAVE_COUNT {
+        return Err(ProgramError::InvalidInstructionData);
+    }
 
     player.set_values(last_time_played, wave_reached);
     Ok(())

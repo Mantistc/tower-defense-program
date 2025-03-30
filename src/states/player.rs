@@ -15,6 +15,7 @@ impl Transmutable for Player {
 }
 
 pub const PLAYER_SEED: &'static [u8] = b"player";
+pub const MAX_POSSIBLE_WAVE_COUNT: u8 = 30;
 
 impl Player {
     #[inline(always)]
