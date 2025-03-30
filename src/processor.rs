@@ -1,13 +1,7 @@
-use crate::instructions::process_initialize_player;
+use crate::instructions::{process_initialize_player, process_update_player};
 use pinocchio::{
     account_info::AccountInfo, program_error::ProgramError, pubkey::Pubkey, ProgramResult,
 };
-
-#[repr(u8)]
-pub enum Instructions {
-    InitializePlayer,
-    UpdatePlayer,
-}
 
 pub fn process_instruction(
     program_id: &Pubkey,
@@ -20,6 +14,7 @@ pub fn process_instruction(
 
     match discriminator {
         0 => process_initialize_player(accounts, instruction_data, program_id),
+        1 => process_update_player(accounts, instruction_data),
         _ => Err(ProgramError::InvalidInstructionData),
     }
 }
