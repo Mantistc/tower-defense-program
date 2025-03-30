@@ -2,7 +2,7 @@
   "name": "client",
   "version": "1.0.0",
   "scripts": {
-    "client": "ts-node src/index.ts"
+    "test": "ts-node src/test.ts"
   },
   "dependencies": {
     "@solana-program/system": "^0.7.0",
