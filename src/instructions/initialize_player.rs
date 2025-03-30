@@ -1,4 +1,4 @@
-use crate::states::{Player, PLAYER_SEED};
+use crate::states::{load_mut_unchecked, Player, PLAYER_SEED};
 use core::mem::size_of;
 use pinocchio::{
     account_info::AccountInfo,
@@ -21,7 +21,7 @@ pub fn process_initialize_player(
     };
 
     if !signer.is_signer() {
-        return Err(ProgramError::IncorrectAuthority);
+        return Err(ProgramError::MissingRequiredSignature);
     }
 
     let last_time_played = u64::from_le_bytes(
@@ -52,11 +52,10 @@ pub fn process_initialize_player(
     }
     .invoke_signed(&pda_signer)?;
 
-    let player_data = unsafe { player.borrow_mut_data_unchecked() };
-    let wave_count = 0u8;
+    let player = unsafe { load_mut_unchecked::<Player>(player.borrow_mut_data_unchecked())? };
 
-    player_data[0..1].copy_from_slice(&wave_count.to_le_bytes());
-    player_data[1..9].copy_from_slice(&last_time_played.to_le_bytes());
+    player.set_values(last_time_played, 0);
+    player.set_authority(signer.key());
 
     Ok(())
 }
