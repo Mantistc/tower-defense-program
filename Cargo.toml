@@ -1,12 +1,10 @@
-[package]
-name = "tower-defense-program"
-version = "0.1.0"
-edition = "2021"
+[workspace]
+package.version = "0.1.0"
+package.edition = "2021"
 
-[lib]
-crate-type = ["cdylib", "lib"]
+members = ["program", "client/rust"]
 
-[dependencies]
+[workspace.dependencies]
 pinocchio = "0.8.1"
 pinocchio-log = "0.4.0"
 pinocchio-pubkey = "0.2.4"
