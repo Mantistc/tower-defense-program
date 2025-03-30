@@ -21,7 +21,7 @@ export class InitializePlayerInstruction implements IInstruction {
   constructor() {}
 
   public async ix(signer: Address, lastTimePlayed: bigint) {
-    const { player } = await getPlayerAddress(signer);
+    const { player, bump } = await getPlayerAddress(signer);
 
     const u64Encoder = getU64Encoder();
     const lastTimePlayedEncoded = u64Encoder.encode(lastTimePlayed);
@@ -29,6 +29,7 @@ export class InitializePlayerInstruction implements IInstruction {
     const allBytes = [
       InstructionDiscriminator.InitializePlayer,
       ...lastTimePlayedEncoded,
+      bump,
     ];
 
     const data: ReadonlyUint8Array = Uint8Array.from(allBytes);
