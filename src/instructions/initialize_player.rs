@@ -1,13 +1,13 @@
-use crate::states::Player;
+use crate::states::{Player, PLAYER_SEED};
 use core::mem::size_of;
 use pinocchio::{
     account_info::AccountInfo,
+    instruction::{Seed, Signer},
     program_error::ProgramError,
     pubkey::Pubkey,
     sysvars::{rent::Rent, Sysvar},
     ProgramResult,
 };
-use pinocchio_log::log;
 use pinocchio_system::instructions::CreateAccount;
 
 #[inline(always)]
@@ -19,23 +19,30 @@ pub fn process_initialize_player(
     let [player, signer, _remaining @ ..] = accounts else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
-    log!("starting!");
+
     if !signer.is_signer() {
         return Err(ProgramError::IncorrectAuthority);
     }
-    log!("ix data len: {}", instruction_data.len());
+
     let last_time_played = u64::from_le_bytes(
         instruction_data[0..8]
             .try_into()
             .map_err(|_error| ProgramError::InvalidInstructionData)?,
     );
-    log!("last time!!");
 
     let space = size_of::<Player>();
 
     let lamports = Rent::get()?.minimum_balance(space);
-    log!("lamports !!");
 
+    let bump = [instruction_data[8]];
+
+    let seeds = &[
+        Seed::from(PLAYER_SEED),
+        Seed::from(signer.key().as_ref()),
+        Seed::from(&bump),
+    ];
+
+    let pda_signer = [Signer::from(seeds)];
     let _account_creation = CreateAccount {
         from: signer,
         to: player,
@@ -43,16 +50,13 @@ pub fn process_initialize_player(
         space: space as u64,
         owner: program_id,
     }
-    .invoke()?;
-    log!("account creation !!");
+    .invoke_signed(&pda_signer)?;
 
     let player_data = unsafe { player.borrow_mut_data_unchecked() };
     let wave_count = 0u8;
-    log!("data borrow !!");
 
     player_data[0..1].copy_from_slice(&wave_count.to_le_bytes());
     player_data[1..9].copy_from_slice(&last_time_played.to_le_bytes());
-    log!("write !!");
 
     Ok(())
 }
