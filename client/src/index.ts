@@ -1,58 +1,67 @@
-import {
-  createSignerFromKeyPair,
-  createSolanaClient,
-  createTransaction,
-  getExplorerLink,
-  getSignatureFromTransaction,
-  setTransactionMessageLifetimeUsingBlockhash,
-  signTransactionMessageWithSigners,
-} from "gill";
+//! you can test all this thing with localhost, just run the solana test validator
+//! put in the .env the localhost values and you're good to go.
+
+//! remember to airdrop some sol first. I didn't put directly in the code bcs on devnet fails a lot
+
+import { createSolanaClient } from "gill";
 import { SOL_RPC } from "./constants";
-import { InitializePlayerInstruction } from "./instructions";
-import { loadKeypairFromEnvironment } from "gill/node";
+import {
+  InitializePlayerInstruction,
+  UpdatePlayerInstruction,
+} from "./instructions";
+import { delay, getSigner } from "./utils";
+import { buildAndSendTx } from "./transactions";
+
+// init the rpc
+const { rpc, sendAndConfirmTransaction } = createSolanaClient({
+  urlOrMoniker: SOL_RPC,
+});
+
+const lastTimePlayed = Math.floor(new Date().getTime() / 1000);
 
 async function initializePlayerTest() {
-  // init the rpc
-  const { rpc, sendAndConfirmTransaction } = createSolanaClient({
-    urlOrMoniker: SOL_RPC,
-  });
+  const signer = await getSigner();
 
-  // init the signer (this must have sol to sign and initialize the player account)
-  const keypair = await loadKeypairFromEnvironment("TEST_KEYPAIR");
-  const signer = await createSignerFromKeyPair(keypair);
-  const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
-
-  // simulate last time played
-  const lastTimePlayed = Math.floor(new Date().getTime() / 1000); //   /1000 to get secs
-
-  // set ix args
   const initializePlayerIx = new InitializePlayerInstruction({
     lastTimePlayed: BigInt(lastTimePlayed),
     signer: signer.address,
   });
-
-  // build the ix
   await initializePlayerIx.make();
 
-  const transaction = createTransaction({
-    version: 0,
-    feePayer: signer,
-    instructions: [initializePlayerIx],
-  });
+  const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
 
-  const signedTransaction = await signTransactionMessageWithSigners(
-    setTransactionMessageLifetimeUsingBlockhash(latestBlockhash, transaction)
+  await buildAndSendTx(
+    signer,
+    [initializePlayerIx],
+    latestBlockhash,
+    sendAndConfirmTransaction
   );
+}
 
-  const signature: string = getSignatureFromTransaction(signedTransaction);
-
-  console.log(getExplorerLink({ transaction: signature, cluster: "devnet" }));
-
-  await sendAndConfirmTransaction(signedTransaction, {
-    skipPreflight: true,
-    commitment: "confirmed",
+async function updatePlayerTest() {
+  const signer = await getSigner();
+  const updatePlayerIx = new UpdatePlayerInstruction({
+    lastTimePlayed: BigInt(lastTimePlayed),
+    signer: signer.address,
+    waveCount: 15,
   });
+  await updatePlayerIx.make();
+
+  const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
+
+  await buildAndSendTx(
+    signer,
+    [updatePlayerIx],
+    latestBlockhash,
+    sendAndConfirmTransaction
+  );
+}
+
+async function run() {
+  await initializePlayerTest();
+  await delay(5000);
+  await updatePlayerTest();
 }
 
 // start the test
-initializePlayerTest();
+run();
