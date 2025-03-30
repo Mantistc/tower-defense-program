@@ -1,6 +1,6 @@
 use std::slice::from_raw_parts;
 
-use solana_program::{
+use solana_sdk::{
     instruction::{AccountMeta, Instruction},
     pubkey::Pubkey, system_program,
 };
