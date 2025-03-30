@@ -3,11 +3,12 @@
 
 //! remember to airdrop some sol first. I didn't put directly in the code bcs on devnet fails a lot
 
-import { createSolanaClient } from "gill";
+import { createSolanaClient, generateKeyPairSigner } from "gill";
 import { SOL_RPC } from "./constants";
 import {
   InitializePlayerInstruction,
-  UpdatePlayerInstruction,
+  UpdatePlayerGameValues,
+  UpdatePlayerAuthority,
 } from "./instructions";
 import { delay, getSigner } from "./utils";
 import { buildAndSendTx } from "./transactions";
@@ -38,9 +39,9 @@ async function initializePlayerTest() {
   );
 }
 
-async function updatePlayerTest() {
+async function updatePlayerGameValuesTest() {
   const signer = await getSigner();
-  const updatePlayerIx = new UpdatePlayerInstruction({
+  const updatePlayerIx = new UpdatePlayerGameValues({
     lastTimePlayed: BigInt(lastTimePlayed),
     signer: signer.address,
     waveCount: 15,
@@ -57,10 +58,31 @@ async function updatePlayerTest() {
   );
 }
 
+async function updatePlayerAuthorityTest() {
+  const signer = await getSigner();
+  const newAuthority = (await generateKeyPairSigner()).address;
+  const updatePlayerAuthority = new UpdatePlayerAuthority({
+    signer: signer.address,
+    newAuthority,
+  });
+  await updatePlayerAuthority.make();
+
+  const { value: latestBlockhash } = await rpc.getLatestBlockhash().send();
+
+  await buildAndSendTx(
+    signer,
+    [updatePlayerAuthority],
+    latestBlockhash,
+    sendAndConfirmTransaction
+  );
+}
+
 async function run() {
   await initializePlayerTest();
   await delay(5000);
-  await updatePlayerTest();
+  await updatePlayerGameValuesTest();
+  await delay(5000);
+  await updatePlayerAuthorityTest();
 }
 
 // start the test

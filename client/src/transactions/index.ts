@@ -21,6 +21,8 @@ export async function buildAndSendTx(
     version: 0,
     feePayer,
     instructions,
+    computeUnitLimit: 5000,
+    computeUnitPrice: 10000,
   });
 
   const signedTransaction = await signTransactionMessageWithSigners(

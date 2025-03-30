@@ -8,13 +8,13 @@ import { getPlayerAddress } from "../accounts";
 import { TOWER_DEFENSE_PROGRAM_ID } from "../constants";
 import { InstructionDiscriminator } from ".";
 
-export interface UpdatePlayerInstructionArgs {
+export interface UpdatePlayerGameValuesInstructionArgs {
   signer: Address;
   lastTimePlayed: bigint;
   waveCount: number;
 }
 
-export class UpdatePlayerInstruction implements IInstruction {
+export class UpdatePlayerGameValues implements IInstruction {
   accounts:
     | readonly (IAccountLookupMeta<string, string> | IAccountMeta<string>)[]
     | undefined;
@@ -23,9 +23,9 @@ export class UpdatePlayerInstruction implements IInstruction {
 
   programAddress: Address<string> = TOWER_DEFENSE_PROGRAM_ID;
 
-  args: UpdatePlayerInstructionArgs;
+  args: UpdatePlayerGameValuesInstructionArgs;
 
-  constructor(args: UpdatePlayerInstructionArgs) {
+  constructor(args: UpdatePlayerGameValuesInstructionArgs) {
     this.args = args;
   }
 
@@ -37,7 +37,7 @@ export class UpdatePlayerInstruction implements IInstruction {
     const lastTimePlayedEncoded = u64Encoder.encode(lastTimePlayed);
 
     const allBytes = [
-      InstructionDiscriminator.UpdatePlayer,
+      InstructionDiscriminator.UpdatePlayerGameValues,
       ...lastTimePlayedEncoded,
       waveCount,
     ];
