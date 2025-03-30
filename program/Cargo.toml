@@ -1,6 +1,5 @@
 [package]
 name = "tower-defense-program"
-
 version = { workspace = true }
 edition = { workspace = true }
 
