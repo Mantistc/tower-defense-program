@@ -18,11 +18,9 @@ export class InitializePlayerInstruction implements IInstruction {
 
   programAddress: Address<string> = TOWER_DEFENSE_PROGRAM_ID;
 
-  constructor(signer: Address, lastTimePlayed: bigint) {
-    this.ix(signer, lastTimePlayed);
-  }
+  constructor() {}
 
-  private async ix(signer: Address, lastTimePlayed: bigint) {
+  public async ix(signer: Address, lastTimePlayed: bigint) {
     const { player } = await getPlayerAddress(signer);
 
     const u64Encoder = getU64Encoder();
