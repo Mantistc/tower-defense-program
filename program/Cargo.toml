@@ -7,8 +7,7 @@ edition = { workspace = true }
 crate-type = ["cdylib", "lib"]
 
 [dependencies]
-pinocchio = { workspace = true }
-pinocchio-log = { workspace = true }
-pinocchio-pubkey = { workspace = true }
-pinocchio-system = { workspace = true }
-
+pinocchio = "0.8.1"
+pinocchio-log = "0.4.0"
+pinocchio-pubkey = "0.2.4"
+pinocchio-system = "0.2.3"

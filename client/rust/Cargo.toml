@@ -10,4 +10,4 @@ categories = ["cryptography", "game-development", "api-bindings"]
 readme = "README.md"
 
 [dependencies]
-solana-program = { workspace = true}
+solana-sdk = { workspace = true}

@@ -5,8 +5,4 @@ resolver = "2"
 members = ["program", "client/rust", "integration_tests"]
 
 [workspace.dependencies]
-pinocchio = "0.8.1"
-pinocchio-log = "0.4.0"
-pinocchio-pubkey = "0.2.4"
-pinocchio-system = "0.2.3"
-solana-program = "2.2.1"
+solana-sdk = "2.2.2"
