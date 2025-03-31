@@ -2,7 +2,10 @@ use crate::states::{load_mut_unchecked, Player, MAX_POSSIBLE_WAVE_COUNT};
 use pinocchio::{account_info::AccountInfo, program_error::ProgramError, ProgramResult};
 
 #[inline(always)]
-pub fn process_update_player_game_values(accounts: &[AccountInfo], instruction_data: &[u8]) -> ProgramResult {
+pub fn process_update_player_game_values(
+    accounts: &[AccountInfo],
+    instruction_data: &[u8],
+) -> ProgramResult {
     let [player, signer, _remaining @ ..] = accounts else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
@@ -20,7 +23,7 @@ pub fn process_update_player_game_values(accounts: &[AccountInfo], instruction_d
     let last_time_played = u64::from_le_bytes(
         instruction_data[0..8]
             .try_into()
-            .map_err(|_error| ProgramError::InvalidInstructionData)?,
+            .map_err(|_| ProgramError::InvalidInstructionData)?,
     );
 
     let wave_reached = instruction_data[8];
