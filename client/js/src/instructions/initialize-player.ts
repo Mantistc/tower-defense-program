@@ -3,7 +3,7 @@ import {
   IAccountMeta,
   IInstruction,
 } from "@solana/instructions";
-import { ReadonlyUint8Array, Address, AccountRole, getU64Encoder } from "gill";
+import { ReadonlyUint8Array, Address, AccountRole } from "gill";
 import { getPlayerAddress } from "../accounts";
 import { SYSTEM_PROGRAM_ADDRESS } from "@solana-program/system";
 import { TOWER_DEFENSE_PROGRAM_ID } from "../constants";
@@ -11,7 +11,6 @@ import { InstructionDiscriminator } from ".";
 
 export interface InitializePlayerInstructionArgs {
   signer: Address;
-  lastTimePlayed: bigint;
 }
 
 export class InitializePlayerInstruction implements IInstruction {
@@ -30,17 +29,10 @@ export class InitializePlayerInstruction implements IInstruction {
   }
 
   public async make() {
-    const { signer, lastTimePlayed } = this.args;
+    const { signer } = this.args;
     const { player, bump } = await getPlayerAddress(signer);
 
-    const u64Encoder = getU64Encoder();
-    const lastTimePlayedEncoded = u64Encoder.encode(lastTimePlayed);
-
-    const allBytes = [
-      InstructionDiscriminator.InitializePlayer,
-      ...lastTimePlayedEncoded,
-      bump,
-    ];
+    const allBytes = [InstructionDiscriminator.InitializePlayer, bump];
 
     const data: ReadonlyUint8Array = Uint8Array.from(allBytes);
 
