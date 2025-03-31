@@ -1,6 +1,6 @@
 use solana_program_test::{tokio, ProgramTest, ProgramTestBanksClientExt};
 use solana_sdk::{pubkey::Pubkey, signer::Signer, transaction::Transaction};
-use td_program_sdk::{instructions, PLAYER_SEED, PROGRAM_ID};
+use td_program_sdk::{instructions, seeds::PLAYER_SEED, PROGRAM_ID};
 
 #[tokio::test]
 async fn initialize_player_test() {
@@ -13,7 +13,7 @@ async fn initialize_player_test() {
 
     let (player, bump) = Pubkey::find_program_address(&seeds, &PROGRAM_ID);
 
-    let init_player_ix = instructions::initialize_player(&player, &payer_pubkey, 0, bump);
+    let init_player_ix = instructions::initialize_player(&player, &payer_pubkey, bump);
 
     let last_blockhash = context
         .banks_client

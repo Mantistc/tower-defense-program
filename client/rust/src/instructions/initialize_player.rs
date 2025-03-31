@@ -2,7 +2,8 @@ use std::slice::from_raw_parts;
 
 use solana_sdk::{
     instruction::{AccountMeta, Instruction},
-    pubkey::Pubkey, system_program,
+    pubkey::Pubkey,
+    system_program,
 };
 
 use crate::PROGRAM_ID;
@@ -10,12 +11,7 @@ use crate::PROGRAM_ID;
 use super::{write_bytes, InstructionDiscriminator, UNINIT_BYTE};
 
 #[inline(always)]
-pub fn initialize_player(
-    player: &Pubkey,
-    signer: &Pubkey,
-    last_time_played: u64,
-    bump: u8,
-) -> Instruction {
+pub fn initialize_player(player: &Pubkey, signer: &Pubkey, bump: u8) -> Instruction {
     let account_metas: [AccountMeta; 3] = [
         AccountMeta::new(*player, false),
         AccountMeta::new(*signer, true),
@@ -33,8 +29,7 @@ pub fn initialize_player(
         &mut instruction_data,
         &[InstructionDiscriminator::InitializePlayer as u8],
     );
-    write_bytes(&mut instruction_data[1..9], &last_time_played.to_le_bytes());
-    write_bytes(&mut instruction_data[9..10], &bump.to_le_bytes());
+    write_bytes(&mut instruction_data[1..2], &bump.to_le_bytes());
 
     Instruction {
         program_id: PROGRAM_ID,
