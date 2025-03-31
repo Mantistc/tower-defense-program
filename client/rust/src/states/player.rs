@@ -8,7 +8,7 @@ pub struct Player {
 }
 
 impl Transmutable for Player {
-    const LEN: usize = 1 + 8 + 32;
+    const LEN: usize = core::mem::size_of::<Player>();
 }
 
 pub trait Transmutable {
