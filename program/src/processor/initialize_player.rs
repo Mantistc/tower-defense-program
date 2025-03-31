@@ -1,5 +1,4 @@
-use crate::states::{load_mut_unchecked, Player, PLAYER_SEED};
-use core::mem::size_of;
+use crate::states::{load_mut_unchecked, Player, Transmutable, PLAYER_SEED};
 use pinocchio::{
     account_info::AccountInfo,
     instruction::{Seed, Signer},
@@ -14,14 +13,14 @@ pub fn process_initialize_player(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    let [player, signer, _remaining @ ..] = accounts else {
+    let [player_info, signer, _remaining @ ..] = accounts else {
         return Err(ProgramError::NotEnoughAccountKeys);
     };
     if !signer.is_signer() {
         return Err(ProgramError::MissingRequiredSignature);
     }
 
-    let space = size_of::<Player>();
+    let space = Player::LEN;
 
     let lamports = Rent::get()?.minimum_balance(space);
 
@@ -36,14 +35,14 @@ pub fn process_initialize_player(
     let pda_signer = [Signer::from(seeds)];
     let _account_creation = CreateAccount {
         from: signer,
-        to: player,
+        to: player_info,
         lamports,
         space: space as u64,
         owner: &crate::id(),
     }
     .invoke_signed(&pda_signer)?;
 
-    let player = unsafe { load_mut_unchecked::<Player>(player.borrow_mut_data_unchecked())? };
+    let player = unsafe { load_mut_unchecked::<Player>(player_info.borrow_mut_data_unchecked())? };
     player.init(signer.key());
 
     Ok(())

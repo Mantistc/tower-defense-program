@@ -1,6 +1,7 @@
 use solana_sdk::pubkey::Pubkey;
 
 pub mod instructions;
+pub mod states;
 
 pub const PROGRAM_ID: Pubkey =
     Pubkey::from_str_const("tdpUmm2N1bhmSfYAynVuWWFWSd5aF5LmiBTPXJEwoW6");

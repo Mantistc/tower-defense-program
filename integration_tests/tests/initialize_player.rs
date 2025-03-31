@@ -1,6 +1,6 @@
 use solana_program_test::{tokio, ProgramTest, ProgramTestBanksClientExt};
 use solana_sdk::{pubkey::Pubkey, signer::Signer, transaction::Transaction};
-use td_program_sdk::{instructions, seeds::PLAYER_SEED, PROGRAM_ID};
+use td_program_sdk::{instructions, seeds::PLAYER_SEED, states::Player, PROGRAM_ID};
 
 #[tokio::test]
 async fn initialize_player_test() {
@@ -34,4 +34,9 @@ async fn initialize_player_test() {
     let account = context.banks_client.get_account(player).await.unwrap();
 
     assert!(account.is_some());
+
+    let player_account = Player::unpack(&account.clone().unwrap().data).unwrap();
+    let player_authority = Pubkey::new_from_array(player_account.authority);
+
+    assert!(player_authority == payer_pubkey);
 }
