@@ -24,7 +24,6 @@ async function initializePlayerTest() {
   const signer = await getSigner();
 
   const initializePlayerIx = new InitializePlayerInstruction({
-    lastTimePlayed: BigInt(lastTimePlayed),
     signer: signer.address,
   });
   await initializePlayerIx.make();
