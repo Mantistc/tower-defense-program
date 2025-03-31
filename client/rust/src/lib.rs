@@ -5,4 +5,6 @@ pub mod instructions;
 pub const PROGRAM_ID: Pubkey =
     Pubkey::from_str_const("tdpUmm2N1bhmSfYAynVuWWFWSd5aF5LmiBTPXJEwoW6");
 
-pub const PLAYER_SEED: &'static [u8] = b"player";
+pub mod seeds {
+    pub const PLAYER_SEED: &'static [u8] = b"player";
+}

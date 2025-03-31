@@ -1,5 +1,5 @@
-use pinocchio::pubkey::Pubkey;
 use super::Transmutable;
+use pinocchio::pubkey::Pubkey;
 
 #[repr(C)]
 #[derive(Default)]
@@ -17,6 +17,12 @@ pub const PLAYER_SEED: &'static [u8] = b"player";
 pub const MAX_POSSIBLE_WAVE_COUNT: u8 = 30;
 
 impl Player {
+    #[inline(always)]
+    pub fn init(&mut self, authority: &Pubkey) {
+        *self = Player::default();
+        self.set_authority(authority);
+    }
+
     #[inline(always)]
     pub fn set_authority(&mut self, authority: &Pubkey) {
         self.authority = *authority;

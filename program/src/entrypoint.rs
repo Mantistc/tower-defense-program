@@ -9,7 +9,7 @@ use pinocchio::{
 entrypoint!(process_instruction);
 
 pub fn process_instruction(
-    program_id: &Pubkey,
+    _program_id: &Pubkey,
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
@@ -18,7 +18,7 @@ pub fn process_instruction(
         .ok_or(ProgramError::InvalidInstructionData)?;
 
     match discriminator {
-        0 => process_initialize_player(accounts, instruction_data, program_id),
+        0 => process_initialize_player(accounts, instruction_data),
         1 => process_update_player_game_values(accounts, instruction_data),
         2 => process_update_player_authority(accounts),
         _ => Err(ProgramError::InvalidInstructionData),
